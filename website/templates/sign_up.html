@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
+  content %}
+  <form method="POST">
+    <h3 align="center">Sign Up</h3>
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter email"
+      />
+    </div>
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        name="firstName"
+        placeholder="Enter first name"
+      />
+    </div>
+    <div class="form-group">
+      <label for="password1">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password1"
+        name="password1"
+        placeholder="Enter password"
+      />
+    </div>
+    <div class="form-group">
+      <label for="password2">Password (Confirm)</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password2"
+        name="password2"
+        placeholder="Confirm password"
+      />
+    </div>
+    <div class="form-group">
+      <label for="method_preference">Choose Your Preferred Trading Method</label>
+      <select name="method_preference" id="method_preference">
+        <option value="0">RSI</option>
+        <option value="1">Moving Averages</option>
+        <option value="2">Bollinger Bands</option>
+        <option value="3">Exponential Moving Average</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="manual_automatic_preference">Select Trading Automation Preference</label>
+      <select name="manual_automatic_preference" id="manual_automatic_preference">
+        <option value="0">Manual Approval</option>
+        <option value="1">Automatic</option>
+      </select>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  {% endblock %}

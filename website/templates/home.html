@@ -1,0 +1,200 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+
+    <div class="container-fluid">
+        <div class="row">
+          <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+            <div class="sidebar-sticky">
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="bar-chart-2"></span>
+                    RSI
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="bar-chart-2"></span>
+                    Products
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="bar-chart-2"></span>
+                    Customers
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="bar-chart-2"></span>
+                    Reports
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span data-feather="bar-chart-2"></span>
+                    Integrations
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+  
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+              <h1 class="h2">Dashboard</h1>
+              <div class="btn-toolbar mb-2 mb-md-0">
+              </div>
+            </div>
+  
+            <canvas class="my-4" id="myChart" width="900" height="380"></canvas>
+  
+            <h2>Price History</h2>
+            <div class="table-responsive">
+              <table class="table table-striped table-sm">
+                <thead>
+                  <tr>
+                    <th>Close Price</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody class="tablebody">
+                </tbody>
+              </table>
+            </div>
+          </main>
+        </div>
+      </div>
+  
+      <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+      <script src="../../../../assets/js/vendor/popper.min.js"></script>
+      <script src="../../../../dist/js/bootstrap.min.js"></script>
+  
+      <!-- Icons -->
+      <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+      <script>
+        feather.replace()
+      </script>
+  
+      <!-- Graphs -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js">
+    </script>
+    
+    <script>
+
+        var canvas = document.getElementById('myChart');
+        var data = {
+            labels: [1, 2, 3, 4, 5, 6, 7],
+            datasets: [
+                {
+                    label: "Candle Closes",
+                    fill: false,
+                    lineTension: 0.1,
+                    backgroundColor: "rgba(75,192,192,0.4)",
+                    borderColor: "rgba(75,192,192,1)",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHitRadius: 10,
+                    data: [],
+                }
+            ]
+        };
+
+        var option = {
+            showLines: true
+        };
+        var myLineChart = Chart.Line(canvas,{
+            data:data,
+        options:option
+        });
+        
+    </script>
+
+    <script>
+        var lastdata = ""
+        // function displayCandle() {
+        //     $.get('/get_new_data',  // url
+        //     function (data) {  // success callback
+        //         if(data.candledata != lastdata){
+        //             $.get('/read_all_data',  // url
+        //             function (chartdata) {  // success callback
+        //                 console.log(chartdata)
+        //                 UpdateChart(chartdata);
+        //             });
+        //         }
+        //         lastdata = data.candledata
+        //     });
+        // }
+
+        // setInterval(displayCandle, 60000)
+
+        function foo() {
+            $.get('/read_all_data/7',  // url
+            function (chartdata) {  // success callback
+                console.log(chartdata);
+                UpdateChart(chartdata);
+            });
+            $.get('/read_all_data/-1',  // url
+            function (chartdata) {  // success callback
+                console.log(chartdata);
+                UpdateTable(chartdata);
+            });
+            $.get('/methodcalculation');
+            setTimeout(foo, 60000);
+        }
+        
+        foo();
+        
+        function UpdateTable(data){
+            console.log(data);
+            $(".tablebody" ).empty();
+            for(const x of data.candlecloses){
+                var temp = x.split(" ");
+                var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                d.setUTCSeconds(temp[1]/1000);
+                timestamp = d.toLocaleTimeString('en-IE');
+                $(".tablebody" ).append( "<tr><td>" + temp[0] + "</td><td>" + timestamp + "</td></tr>" ); 
+            }
+        }
+
+        function UpdateChart(data){
+            var newDataCloses = [];
+            var newDataTimestamps = [];
+            for(const x of data.candlecloses){
+                var temp = x.split(" ");
+                newDataCloses.push(temp[0]);
+                var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                d.setUTCSeconds(temp[1]/1000);
+                timestamp = d.toLocaleTimeString('en-IE');
+                newDataTimestamps.push(timestamp);
+            }
+            myLineChart.data.datasets[0].data = newDataCloses;
+            myLineChart.data.labels = newDataTimestamps;
+            myLineChart.update();
+        }
+
+    </script>
+
+    {% endblock %}
