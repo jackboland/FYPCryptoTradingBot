@@ -44,6 +44,8 @@ def sign_up():
         password2 = request.form.get('password2')
         method_preference = request.form.get('method_preference')
         manual_automatic_preference = request.form.get('manual_automatic_preference')
+        api_key = request.form.get('apiKey')
+        api_secret = request.form.get('apiSecret')
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -59,7 +61,8 @@ def sign_up():
         else:
             new_user = User(email=email, first_name=first_name, password=generate_password_hash(
                 password1, method='sha256'), method_preference=method_preference, 
-                manual_automatic_preference=manual_automatic_preference)
+                manual_automatic_preference=manual_automatic_preference, 
+                api_key=api_key, api_secret=api_secret)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)

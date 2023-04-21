@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_sse import sse
 from os import path
 from flask_login import LoginManager
 
@@ -20,7 +19,6 @@ def create_app():
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(sse, url_prefix='/stream')
 
     from .models import User
     

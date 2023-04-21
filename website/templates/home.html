@@ -4,47 +4,13 @@
     <div class="container-fluid">
         <div class="row">
           <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    RSI
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Products
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Customers
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Reports
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Integrations
-                  </a>
-                </li>
-              </ul>
+            <div class="wallet-balance" id="wallet-balance">
+
             </div>
           </nav>
-  
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-              <h1 class="h2">Dashboard</h1>
+              <h1 class="h2">Live Candle Closes</h1>
               <div class="btn-toolbar mb-2 mb-md-0">
               </div>
             </div>
@@ -57,12 +23,45 @@
                 <thead>
                   <tr>
                     <th>Close Price</th>
-                    <th>Time</th>
+                    <th>Date & Time</th>
                   </tr>
                 </thead>
                 <tbody class="tablebody">
                 </tbody>
               </table>
+              <button class="toggle-btn" onclick="toggleTable()">Show More</button>
+
+              <style>
+                /* Set the default display property for all rows after the third to none */
+                tr:nth-of-type(n+4) {
+                  display: none;
+                }
+            
+                /* Style the toggle button */
+                .toggle-btn {
+                  background-color: #f1f1f1;
+                  color: #333;
+                  padding: 8px 16px;
+                  border: none;
+                  cursor: pointer;
+                  width: 100%;
+                  text-align: center;
+                  outline: none;
+                }
+            
+                /* Style the toggle button when active */
+                .toggle-btn.active {
+                  background-color: #333;
+                  color: #f1f1f1;
+                }
+
+                .wallet-balance {
+                  padding-top: 30px;
+                }
+              </style>
+
+            </head>
+
             </div>
           </main>
         </div>
@@ -71,8 +70,6 @@
       <!-- Bootstrap core JavaScript
       ================================================== -->
       <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
       <script src="../../../../assets/js/vendor/popper.min.js"></script>
       <script src="../../../../dist/js/bootstrap.min.js"></script>
   
@@ -86,20 +83,16 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
 
     <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
-    <script
-        src="https://code.jquery.com/jquery-3.2.1.min.js">
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
     
     <script>
-
         var canvas = document.getElementById('myChart');
         var data = {
             labels: [1, 2, 3, 4, 5, 6, 7],
             datasets: [
                 {
-                    label: "Candle Closes",
+                    label: "Candle Close Prices",
                     fill: false,
                     lineTension: 0.1,
                     backgroundColor: "rgba(75,192,192,0.4)",
@@ -134,23 +127,29 @@
 
     <script>
         var lastdata = ""
-        // function displayCandle() {
-        //     $.get('/get_new_data',  // url
-        //     function (data) {  // success callback
-        //         if(data.candledata != lastdata){
-        //             $.get('/read_all_data',  // url
-        //             function (chartdata) {  // success callback
-        //                 console.log(chartdata)
-        //                 UpdateChart(chartdata);
-        //             });
-        //         }
-        //         lastdata = data.candledata
-        //     });
-        // }
-
-        // setInterval(displayCandle, 60000)
+        function toggleTable() {
+          // Get all the rows after the third
+          var rows = document.querySelectorAll("tr:nth-of-type(n+4)");
+          // Get the toggle button
+          var btn = document.querySelector(".toggle-btn");
+          // Toggle the display property for each row
+          for (var i = 0; i < rows.length; i++) {
+            if (rows[i].style.display === "none") {
+              rows[i].style.display = "table-row";
+            } else {
+              rows[i].style.display = "none";
+            }
+          }
+          // Toggle the active class on the toggle button
+          btn.classList.toggle("active");
+        }
 
         function foo() {
+            $.get('/get_wallet_balance',  // url
+            function (walletbalance) {  // success callback
+                console.log(walletbalance);
+                UpdateBalance(walletbalance);
+            });
             $.get('/read_all_data/7',  // url
             function (chartdata) {  // success callback
                 console.log(chartdata);
@@ -167,14 +166,32 @@
         
         foo();
         
+        function UpdateBalance(data){
+            console.log(data);
+            document.getElementById("wallet-balance").innerHTML = "<h4>Wallet Balances</h4> <p>USD: " + data.accounts.flex.currencies.USD.available + "</p> <p>BTC: " + data.accounts.flex.currencies.BTC.available + "</p>";
+            console.log(data.accounts.cash.balances.bch);
+        }
+
         function UpdateTable(data){
             console.log(data);
             $(".tablebody" ).empty();
-            for(const x of data.candlecloses){
+            for(const x of data.candlecloses.reverse()){
                 var temp = x.split(" ");
                 var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
                 d.setUTCSeconds(temp[1]/1000);
-                timestamp = d.toLocaleTimeString('en-IE');
+                timestamp = d.toLocaleDateString('en-IE') + " " + d.toLocaleTimeString('en-IE');
+                $(".tablebody" ).append( "<tr><td>" + temp[0] + "</td><td>" + timestamp + "</td></tr>" ); 
+            }
+        }
+
+        function UpdateTransactionTable(data){
+            console.log(data);
+            $(".tablebody" ).empty();
+            for(const x of data.candlecloses.reverse()){
+                var temp = x.split(" ");
+                var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                d.setUTCSeconds(temp[1]/1000);
+                timestamp = d.toLocaleDateString('en-IE') + " " + d.toLocaleTimeString('en-IE');
                 $(".tablebody" ).append( "<tr><td>" + temp[0] + "</td><td>" + timestamp + "</td></tr>" ); 
             }
         }
@@ -187,7 +204,7 @@
                 newDataCloses.push(temp[0]);
                 var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
                 d.setUTCSeconds(temp[1]/1000);
-                timestamp = d.toLocaleTimeString('en-IE');
+                timestamp = d.toLocaleDateString('en-IE') + " " + d.toLocaleTimeString('en-IE');
                 newDataTimestamps.push(timestamp);
             }
             myLineChart.data.datasets[0].data = newDataCloses;

@@ -8,6 +8,14 @@ class CandleData(db.Model):
     close = db.Column(db.Integer)
     timestamp = db.Column(db.Integer)
 
+class Transactions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    information = db.Column(db.String(150))
+    timestamp = db.Column(db.Integer)
+
+class BacktestTransactions(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    information = db.Column(db.String(150))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,3 +24,5 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     method_preference = db.Column(db.Integer)
     manual_automatic_preference = db.Column(db.Integer)
+    api_key = db.Column(db.String(150))
+    api_secret = db.Column(db.String(150))

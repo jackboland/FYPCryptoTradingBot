@@ -1,7 +1,9 @@
 from website import create_app
-from website.basebot import get_candle_close
+from website.bots.basebot import get_candle_close
+from flask_login import current_user
 import threading
 
+backtesting = 0
 app = create_app()
 
 def botrun():

@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block title %}Backtesting{% endblock %} {% block content
+    %} 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+  <div class="container my-5">
+    <form method="POST" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="file-input" class="form-label">Upload backtesting data here. Format is .txt file with each close price listed on a new line in the format 'candleprice timestamp'. File should contain at least 100 closing values. </label>
+        <input type="file" class="form-control" id="file-input" name="file-input">
+      </div>
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>Transaction Info</th>
+          </tr>
+        </thead>
+        <tbody class="tablebody">
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/js/bootstrap.min.js"></script>
+
+  <script>
+    function foo() {
+        $.get('/read_all_backtest_transactions/',  // url
+        function (transactions) {  // success callback
+            console.log(transactions);
+            UpdateTable(transactions);
+        });
+    }
+        
+    foo();
+
+    function UpdateTable(data){
+            console.log(data);
+            $(".tablebody" ).empty();
+            for(const x of data.transactions){
+                $(".tablebody" ).append( "<tr><td>" + x + "</td></tr>" ); 
+            }
+        }
+  </script>
+
+  {% endblock %}
